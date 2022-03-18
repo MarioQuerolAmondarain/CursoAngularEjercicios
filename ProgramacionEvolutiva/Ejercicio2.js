@@ -66,11 +66,10 @@ function cruzar(poblacion)
     let length = poblacion.length;
     for (let x = 0; x < length; x++)
     {
-        // if(x % 2 != 0) continue;
+        if(x % 2 != 0) continue;
          
         let papa = poblacion[x];
-        random = parseInt(Math.random()*(length-1));
-        let mama = poblacion[random];
+        let mama = poblacion[x+1];
 
         let mitadPapaEntera = papa.parteEntera.substring(papa.parteEntera.length/2, 0);
         let mitadMamaEntera = mama.parteEntera.substring(mama.parteEntera.length/2);
@@ -80,7 +79,15 @@ function cruzar(poblacion)
 
         let parteEntera = mitadMamaEntera + mitadPapaEntera;
         let parteNoEntera = mitadMamaNoEntera + mitadPapaNoEntera;
-        
+
+        let parteEnteraArray = parteEntera.split("");
+        shuffleArray(parteEnteraArray);
+        parteEntera = parteEnteraArray.join("");
+
+        let parteNoEnteraArray = parteNoEntera.split("");
+        shuffleArray(parteNoEnteraArray);
+        parteEntera = parteNoEnteraArray.join("");
+
         hijo = new Individuo(parteEntera,parteNoEntera);
         poblacion.push(hijo);
     }
@@ -99,7 +106,7 @@ function mutar(poblacion)
     poblacion.forEach(individuo => 
     {
         random = Math.random();
-        if(random <= 0.2)// 20% de mutabilidad
+        if(random <= 0.2)
         {
             let bitCambiar = parseInt(Math.random()*14);
             individuo.parteEntera[bitCambiar] = (individuo.parteEntera[bitCambiar] == 0)? 1 : 0;
@@ -114,13 +121,9 @@ function mutar(poblacion)
     });
 }
 
-function seleccionNatural()
+function seleccionNatural(poblacion)
 {
-    /*
-        Ordenar por aptitud y así eliminar los cincuenta peores  
-    */ 
     var i, k, aux;
-    // Algoritmo de burbuja
     for (k = 1; k < poblacion.length; k++) 
     {
         for (i = 0; i < (poblacion.length - k); i++) 
@@ -134,7 +137,6 @@ function seleccionNatural()
         }
     }
     poblacion.splice(100, 50);
-    // console.log(poblacion);
     return poblacion;
 }
 
@@ -149,16 +151,28 @@ function algoritmoGenetico(poblacion,funcion)
         seleccionNatural(poblacion);
         superIndividuo = poblacion[poblacion.length-1];
         
-        // console.log(poblacion);
-        console.log(superIndividuo.aptitud);
         contador++; 
     } while(contador < 50);
 
-    // console.log(superIndividuo);
+    return superIndividuo;
 }
 
-let funcion = "- x * x"; 
-let poblacion = crearPoblacionInicial();
-algoritmoGenetico(poblacion, funcion);
+let funcion = "- x * x";
 
-//console.log(poblacion);
+let c = 0;
+let index;
+for (index = 0; index < 100; index++) 
+{
+    let poblacion = crearPoblacionInicial();
+    superIndividuo = algoritmoGenetico(poblacion, funcion);
+    
+    if(superIndividuo.aptitud == 0)
+    {
+        c++;
+    }
+    else
+    {
+        console.log(superIndividuo.aptitud);
+    }
+}
+console.log("0 => " + c + "/" + index);
