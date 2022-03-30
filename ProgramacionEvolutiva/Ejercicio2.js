@@ -1,7 +1,7 @@
 class Individuo
 {
-    parteEntera; // [] 16 bits
-    parteNoEntera; // [] 16 bits
+    parteEntera; // [] 10 bits
+    parteNoEntera; // [] 10 bits
     fenotipo;
     aptitud;
     
@@ -35,7 +35,7 @@ function crearPoblacionInicial()
         let parteNoEntera = "";
         let parteEntera = "";
 
-        for (let x = 0; x < 16; x++)
+        for (let x = 0; x < 10; x++)
         {
             let numeroPseudoAleatorio1 = (Math.random() > 0.5)? 1 : 0;
             parteNoEntera += numeroPseudoAleatorio1;
@@ -69,8 +69,8 @@ function cruzar(poblacion)
         if(x % 2 != 0) continue;
          
         let papa = poblacion[x];
-        let mama = poblacion[x+1];
-
+        let mama = poblacion[x+1];;
+       
         let mitadPapaEntera = papa.parteEntera.substring(papa.parteEntera.length/2, 0);
         let mitadMamaEntera = mama.parteEntera.substring(mama.parteEntera.length/2);
         
@@ -108,8 +108,11 @@ function mutar(poblacion)
         random = Math.random();
         if(random <= 0.2)
         {
-            let bitCambiar = parseInt(Math.random()*14);
+            // let bitCambiar = parseInt(Math.random()*14);
+            let bitCambiar = 0;
             individuo.parteEntera[bitCambiar] = (individuo.parteEntera[bitCambiar] == 0)? 1 : 0;
+            individuo.parteEntera[bitCambiar + 1] = (individuo.parteEntera[bitCambiar + 1] == 0)? 1 : 0;
+            individuo.parteEntera[bitCambiar + 2] = (individuo.parteEntera[bitCambiar + 2] == 0)? 1 : 0;
         }   
         
         if(random <= 0.1)
@@ -157,22 +160,26 @@ function algoritmoGenetico(poblacion,funcion)
     return superIndividuo;
 }
 
-let funcion = "- x * x";
+// let funcion = "- x * x";
+// let funcion = "-( 1 - Math.pow(Math.E, (-0.2*Math.abs(x))) + Math.abs( x*Math.pow(Math.E, x*Math.cos(2*Math.PI*x))))";
+// let funcion = "-(Math.pow(Math.E, Math.abs(x)) - 1)";
+// let funcion = "100000*(-2 + Math.pow(Math.sin(x), Math.atan(Math.abs(x/10))) + Math.pow(Math.E, -0.01*Math.abs(x)))";
+let funcion = "-20 -Math.E + 20*(Math.pow(Math.E, -0.2*Math.abs(x))) + Math.pow(Math.E, Math.cos(2*Math.PI*x))";
 
-let c = 0;
-let index;
-for (index = 0; index < 100; index++) 
-{
-    let poblacion = crearPoblacionInicial();
-    superIndividuo = algoritmoGenetico(poblacion, funcion);
+let poblacion = crearPoblacionInicial();
+
+console.log(algoritmoGenetico(poblacion, funcion));
+
+// let c = 0;
+// let index;
+// for (index = 0; index < 100; index++) 
+// {
+//     let poblacion = crearPoblacionInicial();
+//     superIndividuo = algoritmoGenetico(poblacion, funcion);
     
-    if(superIndividuo.aptitud == 0)
-    {
-        c++;
-    }
-    else
-    {
-        console.log(superIndividuo.aptitud);
-    }
-}
-console.log("0 => " + c + "/" + index);
+//     if(superIndividuo.aptitud == 0)
+//     {
+//         c++;
+//     }
+// }
+// console.log("0 => " + c + "/" + index);
